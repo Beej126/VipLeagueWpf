@@ -35,8 +35,8 @@ jobs:
         # https://stackoverflow.com/questions/13920146/using-msbuild-exe-to-publish-a-asp-net-mvc-4-project-with-the-cmd-line/61926970#61926970
         run: msbuild VipLeagueWpf.sln /p:Configuration=Release /p:DeployOnBuild=true /p:PublishProfile=ClickOnceProfile
 
-      - name: Commit wwwroot to GitHub Pages
+      - name: Commit new build to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@4.1.5 # https://github.com/JamesIves/github-pages-deploy-action/releases
         with:
           branch: gh-pages
-          folder: bin/Release/net5.0-windows/win-x64
+          folder: VipLeagueWpf/bin/Release/net5.0-windows/win-x64/
