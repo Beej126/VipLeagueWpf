@@ -21,6 +21,10 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '5.x'
+          
+      # resolves: MSB4803: The task "FormatUrl" is not supported on the .NET Core version of MSBuild. Please use the .NET Framework version of MSBuild.  
+      - name: Add .net msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.3          
 
       - name: build the app via publish profile
         run: dotnet build -c Release /p:DeployOnBuild=true /p:PublishProfile=ClickOnceProfile # https://stackoverflow.com/questions/62787426/dotnet-publish-profile-ignores-pubxml-file/62954314#62954314
