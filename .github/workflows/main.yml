@@ -35,11 +35,11 @@ jobs:
         # https://stackoverflow.com/questions/13920146/using-msbuild-exe-to-publish-a-asp-net-mvc-4-project-with-the-cmd-line/61926970#61926970
         #common bad recommend: run: msbuild VipLeagueWpf.sln /p:Configuration=Release /p:DeployOnBuild=true /p:PublishProfile=ClickOnceProfile
         #https://stackoverflow.com/questions/16246562/using-msbuild-to-execute-a-file-system-publish-profile/54094398#54094398
-        run: msbuild /t:restore;build /p:DeployOnBuild=true /p:PublishProfile=ClickOnceProfile
+        run: /t:restore,publish /p:Configuration=Release /p:DeployOnBuild=true /p:PublishProfile=ClickOnceProfile.pubxml
 
       - name: Commit new build to GitHub Pages
         #this one had an rsync dependency not present on windows: uses: JamesIves/github-pages-deploy-action@4.1.5 # https://github.com/JamesIves/github-pages-deploy-action/releases
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./VipLeagueWpf/bin/Release/net5.0-windows/win-x64/
+          publish_dir: ./VipLeagueWpf/bin/Release/net5.0-windows/win-x64/app.publish/
