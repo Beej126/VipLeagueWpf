@@ -37,9 +37,35 @@ jobs:
         #https://stackoverflow.com/questions/16246562/using-msbuild-to-execute-a-file-system-publish-profile/54094398#54094398
         run: msbuild /t:restore,publish /p:Configuration=Release /p:DeployOnBuild=true /p:PublishProfile=ClickOnceProfile.pubxml
 
-      - name: Commit new build to GitHub Pages
-        #this one had an rsync dependency not present on windows: uses: JamesIves/github-pages-deploy-action@4.1.5 # https://github.com/JamesIves/github-pages-deploy-action/releases
-        uses: peaceiris/actions-gh-pages@v3
+# couldn't use github pages to host the binary because of the >100MB file size for the main exe (~132mb initially)
+#switching to azure blob storage, see next block below
+#       - name: Commit new build to GitHub Pages
+#         #this one had an rsync dependency not present on windows: uses: JamesIves/github-pages-deploy-action@4.1.5 # https://github.com/JamesIves/github-pages-deploy-action/releases
+#         uses: peaceiris/actions-gh-pages@v3
+#         with:
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
+#           publish_dir: ./VipLeagueWpf/bin/Release/net5.0-windows/win-x64/app.publish
+
+      # azure blob storage to host the binary (alas, main exe file was a smidge too big for github repo)
+      # https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-static-site-github-actions
+      - uses: azure/login@v1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./VipLeagueWpf/bin/Release/net5.0-windows/win-x64/app.publish
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: Upload to blob storage
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.0.72
+          inlineScript: |
+              az storage blob upload-batch --account-name beejstor --auth-mode key --destination '$web' --source ./VipLeagueWpf/bin/Release/net5.0-windows/win-x64/app.publish
+              
+#       - name: Purge CDN endpoint
+#         uses: azure/CLI@v1
+#         with:
+#           azcliversion: 2.0.72
+#           inlineScript: |
+#              az cdn endpoint purge --content-paths  "/*" --profile-name "CDN_PROFILE_NAME" --name "CDN_ENDPOINT" --resource-group "RESOURCE_GROUP"
+
+      - name: az logout
+        run: |
+          az logout
