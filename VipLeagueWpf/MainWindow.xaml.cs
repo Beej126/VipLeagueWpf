@@ -95,8 +95,20 @@ namespace VipLeagueWpf
             TaskbarItemInfo.Overlay = bmp;
         }
 
-        private void webView_Initialized(object sender, System.EventArgs e)
+        private async void webView_Initialized(object sender, System.EventArgs e)
         {
+            //wow deploying webView2 is quite complicated since it's a native dll requiring multiple platform versions of the same file
+            //adding the await here means we'll at least see the exception when it's not being resolved properly!!!
+            //https://github.com/MicrosoftEdge/WebView2Feedback/issues/730
+            try
+            {
+                await wv2.EnsureCoreWebView2Async(); //this initializes wv2.CoreWebView2 (i.e. makes it not null)
+            }
+            catch (Exception ex) {
+                MessageBox.Show(ex.Message, "Error initializing embedded web browser", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
+
             wv2.CoreWebView2InitializationCompleted += (object sender, CoreWebView2InitializationCompletedEventArgs e) =>
             {
                 //inject javascript function that scrapes the chat page for message count
@@ -104,9 +116,9 @@ namespace VipLeagueWpf
                 //another good thread: https://blogs.msmvps.com/bsonnino/2021/02/27/using-the-new-webview2-in-a-wpf-app/
                 //https://www.fatalerrors.org/a/excerpt-interaction-between-webview2-and-js.html
                 wv2.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync( //this fires on frames as well which gives us full power to override spammity spam vs just the main page
-                //wv2.CoreWebView2.DOMContentLoaded += (object sender, CoreWebView2DOMContentLoadedEventArgs e) =>
-                //{
-                    //_ = wv2.ExecuteScriptAsync(
+                                                                               //wv2.CoreWebView2.DOMContentLoaded += (object sender, CoreWebView2DOMContentLoadedEventArgs e) =>
+                                                                               //{
+                                                                               //_ = wv2.ExecuteScriptAsync(
                     $@"
                    //window.onload = () => {{
                         var primed = false;
@@ -166,7 +178,6 @@ namespace VipLeagueWpf
                 //wv2.CoreWebView2.WebResourceResponseReceived += async (object sender, CoreWebView2WebResourceResponseReceivedEventArgs e) =>{};
             };
 
-            wv2.EnsureCoreWebView2Async(); //this initializes wv2.CoreWebView2 (i.e. makes it not null)
         }
 
         private void CoreWebView2_WebResourceRequested(object sender, CoreWebView2WebResourceRequestedEventArgs e)

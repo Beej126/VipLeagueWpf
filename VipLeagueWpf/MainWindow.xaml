@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:VipLeagueWpf"
         mc:Ignorable="d"
         Title="VIP League"
-        Height="562" Width="1000"
+        Height="720" Width="1280"
         Background="White"
         Closing="Window_Closing"
 >
