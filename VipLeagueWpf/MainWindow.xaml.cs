@@ -97,18 +97,6 @@ namespace VipLeagueWpf
 
         private async void webView_Initialized(object sender, System.EventArgs e)
         {
-            //wow deploying webView2 is quite complicated since it's a native dll requiring multiple platform versions of the same file
-            //adding the await here means we'll at least see the exception when it's not being resolved properly!!!
-            //https://github.com/MicrosoftEdge/WebView2Feedback/issues/730
-            try
-            {
-                await wv2.EnsureCoreWebView2Async(); //this initializes wv2.CoreWebView2 (i.e. makes it not null)
-            }
-            catch (Exception ex) {
-                MessageBox.Show(ex.Message, "Error initializing embedded web browser", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                return;
-            }
-
             wv2.CoreWebView2InitializationCompleted += (object sender, CoreWebView2InitializationCompletedEventArgs e) =>
             {
                 //inject javascript function that scrapes the chat page for message count
@@ -177,6 +165,19 @@ namespace VipLeagueWpf
                 //BUT, see suggested technique implemented below in WebResourceRequested event...
                 //wv2.CoreWebView2.WebResourceResponseReceived += async (object sender, CoreWebView2WebResourceResponseReceivedEventArgs e) =>{};
             };
+
+            //wow deploying webView2 is quite complicated since it's a native dll requiring multiple platform versions of the same file
+            //adding the await here means we'll at least see the exception when it's not being resolved properly!!!
+            //https://github.com/MicrosoftEdge/WebView2Feedback/issues/730
+            try
+            {
+                await wv2.EnsureCoreWebView2Async(); //this initializes wv2.CoreWebView2 (i.e. makes it not null)
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error initializing embedded web browser", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
 
         }
 
