@@ -11,7 +11,7 @@ jobs:
 
     runs-on: windows-latest #https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
 
-    name: .NET 5 App build and publish to GitHub Pages
+    name: .NET 5 App build
 
     steps:
 
@@ -46,6 +46,38 @@ jobs:
 #           github_token: ${{ secrets.GITHUB_TOKEN }}
 #           publish_dir: ./VipLeagueWpf/bin/Release/net5.0-windows/win-x64/app.publish
 
+      - name: Upload Artifacts 🔺
+        uses: actions/upload-artifact@v1
+        with:
+          name: buildartifact
+          path: ./VipLeagueWpf/bin/Release/net5.0-windows/win-x64/app.publish
+
+#########################################################################
+# next annoying issue was the azure cli step runs in a linux only container that fails on Windows runner!
+# so we have to switch to a linux based job to do the deploy piece, arrrg
+# that means we have to upload the results of the build as an artifact so we can retrieve it over in the linux runner
+# artifact pattern from here: https://github.com/JamesIves/github-pages-deploy-action#operating-system-support-
+
+  deploy:
+    needs: [build] # The second job must depend on the first one to complete before running, and uses ubuntu-latest instead of windows.
+    runs-on: ubuntu-latest
+    name: deploy build artifact to azure storage
+
+    steps:
+#       - name: Checkout 🛎️
+#         uses: actions/checkout@v2.3.1
+
+      - name: Download Artifacts 🔻 # The built project is downloaded into the 'site' folder.
+        uses: actions/download-artifact@v1
+        with:
+          name: buildartifact
+
+#       - name: Deploy 🚀
+#         uses: JamesIves/github-pages-deploy-action@4.1.5
+#         with:
+#           branch: gh-pages
+#           folder: 'site' # The deployment folder should match the name of the artifact. Even though our project builds into the 'build' folder the artifact name of 'site' must be placed here.
+
       # azure blob storage to host the binary (alas, main exe file was a smidge too big for github repo)
       # https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-static-site-github-actions
       - uses: azure/login@v1
@@ -57,7 +89,7 @@ jobs:
         with:
           azcliversion: 2.0.72
           inlineScript: |
-              az storage blob upload-batch --account-name beejstor --auth-mode key --destination '$web' --source ./VipLeagueWpf/bin/Release/net5.0-windows/win-x64/app.publish
+              az storage blob upload-batch --account-name beejstor --auth-mode key --destination '$web' --source ./buildartifact
               
 #       - name: Purge CDN endpoint
 #         uses: azure/CLI@v1
