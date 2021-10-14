@@ -47,13 +47,16 @@ namespace VipLeagueWpf
 
             IConfigurationRoot configuration = builder.Build();
 
-            //var services = new ServiceCollection();
+            var services = new ServiceCollection();
 
-            //services.AddSingleton<IConfiguration>(configuration);
+            services.AddHttpClient();
+            services.AddSingleton<IConfiguration>(configuration);
+            services.AddSingleton<MainWindow>();
 
-            //var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = services.BuildServiceProvider();
 
-            new MainWindow(configuration).Show();
+            var mainWin = serviceProvider.GetRequiredService<MainWindow>();
+            mainWin.Show();
         }
     }
 }

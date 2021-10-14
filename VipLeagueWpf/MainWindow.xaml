@@ -72,7 +72,7 @@
       <Button Width="50">click me</Button>
     </GroupBox>
     <TextBox Height="100" Text="blah blah blah" DockPanel.Dock="Top" />-->
-    <wv2:WebView2 Name="wv2" Source="https://www.vipleague.cc" WebMessageReceived="Wv2_WebMessageReceived" Initialized="webView_Initialized" />
+    <wv2:WebView2 Name="wv2" Source="https://vipleague.me" WebMessageReceived="Wv2_WebMessageReceived" Initialized="webView_Initialized" />
   </DockPanel>
 
 </Window>
