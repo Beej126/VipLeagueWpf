@@ -21,10 +21,14 @@ namespace VipLeagueWpf
         private readonly IConfiguration config;
         private readonly IHttpClientFactory httpClientFactory;
 
+        private string[] rootDomains;
+
         public MainWindow(IConfiguration config, IHttpClientFactory httpClientFactory)
         {
             this.config = config;
             this.httpClientFactory = httpClientFactory;
+
+            rootDomains = config.GetSection("rootDomains").GetChildren().Select(kv => "https://" + kv.Value).ToArray();
 
             InitializeComponent();
         }
@@ -166,7 +170,7 @@ namespace VipLeagueWpf
                 //otherwise block every other request to open new window!
                 wv2.CoreWebView2.NewWindowRequested += (object sender, CoreWebView2NewWindowRequestedEventArgs e) =>
                 {
-                    if (e.Uri.StartsWith("https://vipleague.me") && e.Uri != "https://vipleague.me/img/vipleague.svg") wv2.Source = new Uri(e.Uri);
+                    if (rootDomains.Any(domain => e.Uri.StartsWith(domain)) && !e.Uri.EndsWith("vipleague.svg")) wv2.Source = new Uri(e.Uri);
                     e.Handled = true;
                 };
 
@@ -195,7 +199,9 @@ namespace VipLeagueWpf
         {
             if (new[]
             {
-                "https://vipleague.me/",
+                //"https://vipleague.me/",
+                "https://nflstream.io/",
+                "https://nbastream.nu/",
                 //"https://www.vipleague.cc/jquery.js",
                 //"https://www.vipleague.cc/bootstrap.js",
                 //"https://www.vipleague.cc/favicon-32x32.png",
@@ -210,7 +216,7 @@ namespace VipLeagueWpf
                 //"https://www.tvply.me",
                 @"chatango\.com", //chat stuff
                 //@"taboola\.com" //chat stuff
-            }.Any(pattern => Regex.IsMatch(e.Request.Uri, pattern))) return;
+            }.Concat(rootDomains).Any(pattern => Regex.IsMatch(e.Request.Uri, pattern))) return;
 
             //if (e.ResourceContext == CoreWebView2WebResourceContext.Fetch || e.ResourceContext == CoreWebView2WebResourceContext.XmlHttpRequest) return;
             //if (
@@ -237,8 +243,8 @@ namespace VipLeagueWpf
                 {
 
                     var client = httpClientFactory.CreateClient();
-                    client.DefaultRequestHeaders.Add("Origin", "https://vipleague.me");
-                    client.DefaultRequestHeaders.Add("Referer", "https://vipleague.me");
+                    client.DefaultRequestHeaders.Add("Origin", rootDomains[0]);
+                    client.DefaultRequestHeaders.Add("Referer", rootDomains[0]);
 
                     var response = client.PostAsync(e.Request.Uri, null).Result;
                     //var responseHeaders = String.Join("\n", response.Headers.Select(h => $"{h.Key}={h.Value}"));
