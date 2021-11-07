@@ -13,8 +13,8 @@
 
   <PropertyGroup>
     <ApplicationIcon>vipleague.ico</ApplicationIcon>
-    <AssemblyVersion>1.0.0.3</AssemblyVersion>
-    <FileVersion>1.0.0.3</FileVersion>
+    <AssemblyVersion>1.0.0.4</AssemblyVersion>
+    <FileVersion>1.0.0.4</FileVersion>
     <Win32Resource />
   </PropertyGroup>
 
