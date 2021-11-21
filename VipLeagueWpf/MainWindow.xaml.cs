@@ -31,14 +31,16 @@ namespace VipLeagueWpf
             rootDomains = config.GetSection("rootDomains").GetChildren().Select(kv => "https://" + kv.Value).ToArray();
 
             InitializeComponent();
+
+            //this.Title = "Beej's Vip League v" + ApplicationDeployment.CurrentDeployment.CurrentVersion.Revision;
         }
 
         //https://stackoverflow.com/questions/2471867/resize-a-wpf-window-but-maintain-proportions/2767239#2767239
-        private const double ASPECT = 16.0 / 9;
+        private const double ASPECT_RATIO = 16.0 / 9;
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
-            if (sizeInfo.WidthChanged) this.Width = sizeInfo.NewSize.Height * ASPECT;
-            else this.Height = sizeInfo.NewSize.Width / ASPECT;
+            if (sizeInfo.WidthChanged) this.Width = sizeInfo.NewSize.Height * ASPECT_RATIO;
+            else this.Height = sizeInfo.NewSize.Width / ASPECT_RATIO;
         }
 
         public override void OnApplyTemplate()
@@ -120,6 +122,7 @@ namespace VipLeagueWpf
                                                                                //_ = wv2.ExecuteScriptAsync(
                     $@"
                    //window.onload = () => {{
+
                         var primed = false;
                         var timerHandle = setInterval(()=>{{
 
@@ -216,6 +219,7 @@ namespace VipLeagueWpf
                 //"https://www.tvply.me",
                 @"chatango\.com", //chat stuff
                 //@"taboola\.com" //chat stuff
+                @"https://v1sts.me/"
             }.Concat(rootDomains).Any(pattern => Regex.IsMatch(e.Request.Uri, pattern))) return;
 
             //if (e.ResourceContext == CoreWebView2WebResourceContext.Fetch || e.ResourceContext == CoreWebView2WebResourceContext.XmlHttpRequest) return;
@@ -244,7 +248,7 @@ namespace VipLeagueWpf
 
                     var client = httpClientFactory.CreateClient();
                     client.DefaultRequestHeaders.Add("Origin", rootDomains[0]);
-                    client.DefaultRequestHeaders.Add("Referer", rootDomains[0]);
+                     client.DefaultRequestHeaders.Add("Referer", rootDomains[0]);
 
                     var response = client.PostAsync(e.Request.Uri, null).Result;
                     //var responseHeaders = String.Join("\n", response.Headers.Select(h => $"{h.Key}={h.Value}"));
