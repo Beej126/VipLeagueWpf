@@ -90,9 +90,9 @@ jobs:
       - name: Upload to blob storage
         uses: azure/CLI@v1
         with:
-          azcliversion: 2.0.72
+          # dont do this!: azcliversion: 2.0.72
+          # https://github.com/Azure/cli/issues/56#issuecomment-965477430
           inlineScript: |
-              az account set -s '55d4ee10-bf25-4f6e-8628-7d6fa49d3f08'
               az storage blob upload-batch --account-name beejstor --auth-mode key --destination '$web' --source ./buildartifact
               
 #       - name: Purge CDN endpoint
