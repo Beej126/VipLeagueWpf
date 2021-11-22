@@ -92,6 +92,7 @@ jobs:
         with:
           azcliversion: 2.0.72
           inlineScript: |
+              az account set -s '55d4ee10-bf25-4f6e-8628-7d6fa49d3f08'
               az storage blob upload-batch --account-name beejstor --auth-mode key --destination '$web' --source ./buildartifact
               
 #       - name: Purge CDN endpoint
