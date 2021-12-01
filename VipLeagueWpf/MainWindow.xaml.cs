@@ -219,7 +219,8 @@ namespace VipLeagueWpf
                 //"https://www.tvply.me",
                 @"chatango\.com", //chat stuff
                 //@"taboola\.com" //chat stuff
-                @"https://v1sts.me/"
+                @"https://v1sts.me/",
+                "just-detect-adblock" //https://raw.githubusercontent.com/wmcmurray/just-detect-adblock/master/baits/pagead2.googlesyndication.com
             }.Concat(rootDomains).Any(pattern => Regex.IsMatch(e.Request.Uri, pattern))) return;
 
             //if (e.ResourceContext == CoreWebView2WebResourceContext.Fetch || e.ResourceContext == CoreWebView2WebResourceContext.XmlHttpRequest) return;
