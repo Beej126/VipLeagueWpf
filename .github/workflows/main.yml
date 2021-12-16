@@ -93,7 +93,7 @@ jobs:
           # dont do this!: azcliversion: 2.0.72
           # https://github.com/Azure/cli/issues/56#issuecomment-965477430
           inlineScript: |
-              az storage blob upload-batch --account-name beejstor --auth-mode key --destination '$web' --source ./buildartifact
+              az storage blob upload-batch --account-name beejstor --auth-mode key --destination '$web/vipleagueapp' --source ./buildartifact
               
 #       - name: Purge CDN endpoint
 #         uses: azure/CLI@v1
