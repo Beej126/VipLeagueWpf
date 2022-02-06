@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Collections.Specialized;
 
 namespace VipLeagueWpf
 {
@@ -198,6 +199,8 @@ namespace VipLeagueWpf
 
         }
 
+        private StringDictionary uniqeUrls = new StringDictionary();
+
         private void CoreWebView2_WebResourceRequested(object sender, CoreWebView2WebResourceRequestedEventArgs e)
         {
             if (new[]
@@ -215,7 +218,7 @@ namespace VipLeagueWpf
                 //"https://www.vipleague.cc/loadchatdata",
                 @"https://fonts\.",
                 @"https://cdn\.okamata", //football icons
-                "https://cdn.tvply.me", ///scripts/embed.min.js", //tvply.me is the main video stream feeds
+                "https://cdn[1-9]?.tvply.me", ///scripts/embed.min.js", //tvply.me is the main video stream feeds
                 //"https://www.tvply.me",
                 @"chatango\.com", //chat stuff
                 //@"taboola\.com" //chat stuff
