@@ -1,3 +1,6 @@
+# DEPRECATED - i've shifted to supporting this idea under my [GenericWebAppWpfWrapper](https://github.com/Beej126/GenericWebAppWpfWrapper) project
+it's good to keep this around for some of the javascript hacking techniques i haven't needed to bring over yet
+
 # VipLeagueWpf
 WPF app using msft webView2 to host vipleague.cc so i can hack away all the noise =)
 
